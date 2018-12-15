@@ -23,7 +23,7 @@ TARGETS=ip rtmon
 all: $(TARGETS) $(SCRIPTS)
 
 ip: $(IPOBJ) $(LIBNETLINK)
-	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(QUIET_LINK)$(CC) $(filter-out dynsyms.list, $^) $(LDFLAGS) $(LDLIBS) -o $@
 
 rtmon: $(RTMONOBJ)
 	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
@@ -34,12 +34,22 @@ install: all
 
 clean:
 	rm -f $(ALLOBJ) $(TARGETS)
+	rm -f dynsyms.list
 
 SHARED_LIBS ?= y
 ifeq ($(SHARED_LIBS),y)
 
 LDLIBS += -ldl
-LDFLAGS += -Wl,-export-dynamic
+LDFLAGS += -Wl,--dynamic-list=dynsyms.list
+
+ip: dynsyms.list
+dynsyms.list: $(wildcard *.c)
+	files="$^" ; \
+	echo "{" > $@ ; \
+	for s in `grep -B 3 '\<dlsym' $$files | sed -n '/snprintf/{s:.*"\([^"]*\)".*:\1:;s:%s::;p}'` ; do \
+		sed -n '/'$$s'[^ ]* =/{s:.* \([^ ]*'$$s'[^ ]*\) .*:\1;:;p}' $$files ; \
+	done >> $@ ; \
+	echo "};" >> $@
 
 else
 
