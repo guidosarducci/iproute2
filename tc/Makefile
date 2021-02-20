@@ -112,6 +112,8 @@ endif
 TCOBJ += $(TCMODULES)
 LDLIBS += -L. -lm
 
+LDLIBS += $(LIBBPFUTIL)
+
 ifeq ($(SHARED_LIBS),y)
 LDLIBS += -ldl
 LDFLAGS += -Wl,-export-dynamic
@@ -140,7 +142,7 @@ MODDESTDIR := $(DESTDIR)$(LIBDIR)/tc
 
 all: tc $(TCSO)
 
-tc: $(TCOBJ) $(LIBNETLINK) libtc.a
+tc: $(TCOBJ) $(LIBNETLINK) $(LIBBPFUTIL) libtc.a
 	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 libtc.a: $(TCLIB)

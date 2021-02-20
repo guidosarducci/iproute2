@@ -23,7 +23,7 @@ TARGETS=ip rtmon
 
 all: $(TARGETS) $(SCRIPTS)
 
-ip: $(IPOBJ) $(LIBNETLINK)
+ip: $(IPOBJ) $(LIBNETLINK) $(LIBBPFUTIL)
 	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 rtmon: $(RTMONOBJ)
@@ -35,6 +35,8 @@ install: all
 
 clean:
 	rm -f $(ALLOBJ) $(TARGETS)
+
+LDLIBS += $(LIBBPFUTIL)
 
 SHARED_LIBS ?= y
 ifeq ($(SHARED_LIBS),y)
