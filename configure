@@ -239,7 +239,7 @@ check_elf()
 	echo "yes"
 
 	echo 'CFLAGS += -DHAVE_ELF' `${PKG_CONFIG} libelf --cflags` >> $CONFIG
-	echo 'LDLIBS += ' `${PKG_CONFIG} libelf --libs` >>$CONFIG
+	echo 'LDLIBS += -Wl,-Bstatic' `${PKG_CONFIG} libelf --libs` '-Wl,-Bdynamic -lz'>>$CONFIG
     else
 	echo "no"
     fi
@@ -332,7 +332,7 @@ check_libbpf()
         echo "HAVE_LIBBPF:=y" >> $CONFIG
         echo 'CFLAGS += -DHAVE_LIBBPF ' $LIBBPF_CFLAGS >> $CONFIG
         echo "CFLAGS += -DLIBBPF_VERSION=\\\"$LIBBPF_VERSION\\\"" >> $CONFIG
-        echo 'LDLIBS += ' $LIBBPF_LDLIBS >> $CONFIG
+        echo 'LDLIBS += -Wl,-Bstatic' $LIBBPF_LDLIBS '-Wl,-Bdynamic'>> $CONFIG
 
         if [ -z "$LIBBPF_DIR" ]; then
             echo "CFLAGS += -DLIBBPF_DYNAMIC" >> $CONFIG
