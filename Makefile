@@ -60,6 +60,7 @@ SUBDIRS=lib ip tc bridge misc netem genl tipc devlink rdma dcb man
 LIBBPFUTIL=../lib/libbpfutil.a
 LIBNETLINK=../lib/libutil.a ../lib/libnetlink.a
 LDLIBS += $(LIBNETLINK)
+LDFLAGS += -Wl,--as-needed
 
 all: config.mk
 	@set -e; \
