@@ -258,7 +258,16 @@ int main(int argc, char **argv) {
 }
 EOF
 
-    $CC -o $TMPDIR/libbpf_test $TMPDIR/libbpf_test.c $LIBBPF_CFLAGS $LIBBPF_LDLIBS >/dev/null 2>&1
+echo
+echo Environment:
+    env
+
+minicomp="$CC -o $TMPDIR/libbpf_test $TMPDIR/libbpf_test.c $LIBBPF_CFLAGS $LIBBPF_LDLIBS $LDFLAGS"
+#minicomp="$CC -o $TMPDIR/libbpf_test $TMPDIR/libbpf_test.c $LIBBPF_CFLAGS $LIBBPF_LDLIBS -Wl,-rpath-link=/home/kodidev/openwrt-project/staging_dir/target-mips_24kc_musl/usr/lib/libintl-full/lib"
+#minicomp="$CC -o $TMPDIR/libbpf_test $TMPDIR/libbpf_test.c $LIBBPF_CFLAGS $LIBBPF_LDLIBS"
+echo Compile command:
+echo $minicomp
+eval $minicomp
     local ret=$?
 
     rm -f $TMPDIR/libbpf_test.c $TMPDIR/libbpf_test
